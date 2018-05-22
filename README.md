@@ -1,6 +1,7 @@
 # olc
 
 > Demo for OLC codes
+> AKA [Plus Codes](https://plus.codes)
 
 ## Build Setup
 
