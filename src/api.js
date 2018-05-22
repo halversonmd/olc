@@ -17,7 +17,6 @@ export default {
   },
   async getCoords () {
     var resp = await this.execute('get', '/api/coords')
-    console.log(resp)
     return resp
   }
 }
