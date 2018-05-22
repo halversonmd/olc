@@ -2,7 +2,7 @@
   <b-container class="bv-example-row bv-example-row-flex-cols">
     <b-row class="py-2">
       <p>
-        Select an OLC size below and click around the map. 
+        Select an OLC size below and click around the map.
       </p>
     </b-row>
     <b-row class="py-2">
