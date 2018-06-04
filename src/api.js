@@ -15,8 +15,10 @@ export default {
       return req.data
     })
   },
-  async getCoords () {
-    var resp = await this.execute('get', '/api/coords')
-    return resp
+  getCoords () {
+    return this.execute('get', '/api/coords')
+  },
+  getOlcs (coords) {
+    return this.execute('post', '/api/olcCodes', coords)
   }
 }
