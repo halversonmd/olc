@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import olcMap from '@/components/olc_map'
 import olcOverview from '@/components/olc_overview'
+import plotPoi from '@/components/plot_poi'
 
 Vue.use(Router)
 
@@ -17,6 +18,11 @@ export default new Router({
       path: '/overview',
       name: 'overview',
       component: olcOverview
+    },
+    {
+      path: '/convert',
+      name: 'plot_poi',
+      component: plotPoi
     }
   ]
 })
