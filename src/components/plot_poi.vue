@@ -9,6 +9,9 @@
       </p>
     </b-row>
     <b-row class="py-2">
+      <button v-on:click="testPlot">testPlot</button>
+    </b-row>
+    <b-row class="py-2">
       <b-col align-self="center" cols="8">
         <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving">
           <h1>Upload Coords</h1>
@@ -79,7 +82,7 @@ export default {
       this.uploadError = null
     },
     async upload (formData) {
-      const olcs = await api.getOlcs(formData)
+      const olcs = await api.postOlcs(formData)
       mapCtl.plotList(olcs.olcCodes, olcs.pois)
     },
     filesChange (fieldName, fileList) {

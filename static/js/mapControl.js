@@ -38,7 +38,7 @@ class MapControl {
           clickable: false
         });
       }
-      console.log(coords)
+      console.log(codes)
       for (var i=0; i<coords.length; i++){
         var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
         var centerMarc = new google.maps.Marker({
@@ -49,17 +49,14 @@ class MapControl {
       }
     }
     placeMarkerAndPanTo(latLng, olc_size) {
-      //testing API post
-      let tmpCoords = {size: olc_size, coords:[[40.817271964012974, -74.03211564029554], [40.817271964012974, -73.97716188630599], [40.76721868577083, -74.08706939428511], [40.76721868577083, -74.03219843277579], [40.76721868577083, -73.97732747126648], [40.76721868577083, -73.92245650975717], [40.71716540752868, -74.08706939428511], [40.71716540752868, -74.03228095473358], [40.71716540752868, -73.97749251518206], [40.71716540752868, -73.92270407563053], [40.66711212928654, -74.03236320723352], [40.66711212928654, -73.97765702018192]]}
-      api.getOlcs(tmpCoords).then((resp) => {
-        console.log(resp)
-      })
       var currentCode = OpenLocationCode.encode(latLng.lat(), latLng.lng(), olc_size);
       var codeAreac = OpenLocationCode.decode(currentCode);
       var newBoundc = new google.maps.LatLngBounds(
         new google.maps.LatLng(codeAreac.latitudeLo, codeAreac.longitudeLo),
         new google.maps.LatLng(codeAreac.latitudeHi, codeAreac.longitudeHi));
       this.clearPoly()
+      console.log('latlo, lonlo', codeAreac.latitudeLo, codeAreac.longitudeLo)
+      console.log('lathi, lonhi', codeAreac.latitudeHi, codeAreac.longitudeHi)
       this.poly.setOptions({
         map: this.globalMap,
         bounds: newBoundc,
@@ -78,43 +75,37 @@ class MapControl {
       self.lon = latLng.lng();
       self.currentCode = currentCode;
     }
-    loadOlc() {
-      api.getCoords().then((resp) => {
-        const latlngs = resp
-        var olcCodes = new Array()
-        for (var i=0; i<latlngs.length; ++i){
+    async loadOlc(latLng, rad, size) {
+      const resp = await api.getOlcs(latLng.lat(), latLng.lng(), rad, size)
+      for (var i=0; i<resp.olcCodes.length; ++i){
 
-          var my_lat = latlngs[i][0]
-          var my_lon = latlngs[i][1]
+        var codeArea = OpenLocationCode.decode(resp.olcCodes[i]);
 
-          var currentCode = OpenLocationCode.encode(my_lat, my_lon, 6);
-          olcCodes.push(currentCode)
+        var newBound = new google.maps.LatLngBounds(
+            new google.maps.LatLng(codeArea.latitudeLo, codeArea.longitudeLo),
+            new google.maps.LatLng(codeArea.latitudeHi, codeArea.longitudeHi));
 
-          var codeArea = OpenLocationCode.decode(currentCode);
-
-          var newBound = new google.maps.LatLngBounds(
-              new google.maps.LatLng(codeArea.latitudeLo, codeArea.longitudeLo),
-              new google.maps.LatLng(codeArea.latitudeHi, codeArea.longitudeHi));
-
-          var poly = new google.maps.Rectangle({
-            map: this.globalMap,
-            bounds: newBound,
-            strokeColor: '#000000',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#e51c23',
-            fillOpacity: 0.6,
-            clickable: false
-          });
-        };
+        var poly = new google.maps.Rectangle({
+          map: this.globalMap,
+          bounds: newBound,
+          strokeColor: '#000000',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: '#e51c23',
+          fillOpacity: 0.6,
+          clickable: false
+        });
+      };
+      for (var i=0; i<resp.pois.length; ++i){
+        var myLat = parseFloat(resp.pois[i][0])
+        var myLon = parseFloat(resp.pois[i][1])
         var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
         var centerMarc = new google.maps.Marker({
-            position: {lat: 40.742192046649755, lng: -73.99111747741699},
+            position: {lat: myLat, lng: myLon},
             map: this.globalMap,
             icon: image
           });
-        var circleCenter1 = new google.maps.LatLng(40.742192046649755, -73.99111747741699)
-        var miles = 5
+        var circleCenter1 = new google.maps.LatLng(myLat, myLon)
         var cityCircle = new google.maps.Circle({
           strokeColor: '#0000FF',
           strokeOpacity: 0.8,
@@ -123,9 +114,9 @@ class MapControl {
           fillOpacity: 0.5,
           map: this.globalMap,
           center: circleCenter1,
-          radius: miles*1609.34 //meters
+          radius: rad*1609.34 //meters
         });
-      })
+      }
     }
     refreshPage() {
       window.location.reload()

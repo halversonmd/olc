@@ -15,10 +15,14 @@ export default {
       return req.data
     })
   },
-  getCoords () {
-    return this.execute('get', '/api/coords')
+  getOlcs (lat, lon, radius, size) {
+    let params = 'lat=' + lat + '&lon=' + lon + '&rad=' + radius + '&sz=' + size
+    return this.execute('get', '/api/olcCodes?' + params)
   },
-  getOlcs (coords) {
+  postOlcs (coords) {
     return this.execute('post', '/api/olcCodes', coords)
+  },
+  testGetOlcs () {
+    return this.execute('get', '/api/testOlcs')
   }
 }

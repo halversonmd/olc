@@ -23,7 +23,11 @@
             </tr>
           </tbody>
         </table>
-        <select @change="selectOlcAlert=false" v-model="olcSize" class="chart-btn">
+      </b-col>
+    </b-row>
+    <b-row class="py-2">
+      <b-col align-self="center" cols="4">
+       <select @change="selectOlcAlert=false" v-model="olcSize" class="chart-btn">
           <option value=false>Select OLC Size</option>
           <option value=2>2</option>
           <option value=4>4</option>
@@ -38,7 +42,15 @@
           Select Size!
         </b-alert>
       </b-col>
+      <b-col align-self="center" cols="4">
+        <h3>Radius</h3>
+        <input type="radio" id="five" value="5" v-model="radius">
+        <label for="five">5</label>
+        <input type="radio" id="ten" value="10" v-model="radius">
+        <label for="ten">10</label>
+      </b-col>
     </b-row>
+
     <b-row class="py-2">
       <b-col>
         <div id="map-canvas" style="height: 500px; width: 700px"></div>
@@ -64,6 +76,7 @@ export default {
       olcSize: false,
       map: null,
       selectOlcAlert: false,
+      radius: '5',
       clickedData: {
         lat: '',
         lon: '',
@@ -73,7 +86,7 @@ export default {
   },
   methods: {
     async loadMap () {
-      mapCtl.loadOlc()
+      mapCtl.loadOlc(this.radius, this.olcSize)
     },
     loadClickData () {
       this.clickedData = mapCtl.clickData()
@@ -84,7 +97,8 @@ export default {
     let _thisVue = this
     this.map.globalMap.addListener('click', (e) => {
       if (_thisVue.olcSize) {
-        mapCtl.placeMarkerAndPanTo(e.latLng, _thisVue.olcSize)
+        // mapCtl.placeMarkerAndPanTo(e.latLng, _thisVue.olcSize)
+        mapCtl.loadOlc(e.latLng, _thisVue.radius, _thisVue.olcSize)
         _thisVue.loadClickData()
       } else {
         _thisVue.selectOlcAlert = true
