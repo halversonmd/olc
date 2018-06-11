@@ -97,8 +97,8 @@ export default {
     let _thisVue = this
     this.map.globalMap.addListener('click', (e) => {
       if (_thisVue.olcSize) {
-        // mapCtl.placeMarkerAndPanTo(e.latLng, _thisVue.olcSize)
-        mapCtl.loadOlc(e.latLng, _thisVue.radius, _thisVue.olcSize)
+        mapCtl.placeMarkerAndPanTo(e.latLng, _thisVue.olcSize)
+        // mapCtl.loadOlc(e.latLng, _thisVue.radius, _thisVue.olcSize)
         _thisVue.loadClickData()
       } else {
         _thisVue.selectOlcAlert = true
