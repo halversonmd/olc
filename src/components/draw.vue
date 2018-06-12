@@ -1,13 +1,15 @@
 <template>
   <b-container class="bv-example-row bv-example-row-flex-cols">
-    <b-row class="py-2">
-      <p>
-        Select an OLC size below and click around the map.
-      </p>
+    <b-row align-self="center" class="py-2">
+      <b-col cols="12">
+        <p>
+          Click around the map below to create custom geo boundaries using OLCs with various sizes.  The codes you choose will appear in the adjacent text box.
+        </p>
+      </b-col>
     </b-row>
     <b-row class="py-2">
-      <b-col align-self="center" cols="6">
-        <h3>Size</h3>
+      <b-col cols="6">
+        <p><b>OLC Size:</b></p>
         <input type="radio" id="ten" value=10 v-model="olcSize" v-on:change='setCanDraw'>
         <label for="ten">10</label>
         <input type="radio" id="eight" value=8 v-model="olcSize" v-on:change='setCanDraw'>
@@ -24,7 +26,7 @@
           <b-btn v-on:click="drawGrid" :disabled="canDraw===false">Draw Grid</b-btn>
           <b-popover target="redraw"
                  triggers="hover"
-                 placement="left"
+                 placement="right"
                  plaintext
                  :disabled="canDraw===true">
                Zoom in or select different size
@@ -36,7 +38,7 @@
 
     <b-row class="py-2">
       <b-col>
-        <div id="map-canvas" style="height: 500px; width: 700px"></div>
+        <div id="map-canvas" class="w-100" style="height: 500px"></div>
       </b-col>
       <b-col cols="3">
         <span>Selected OLCs:</span>
@@ -61,7 +63,7 @@ export default {
     mapCtl.globalMap = await document.getElementById('map-canvas')
     mapCtl.newMap()
   },
-  name: 'olcMap',
+  name: 'olcDraw',
   data () {
     return {
       olcSize: 6,
@@ -100,7 +102,6 @@ export default {
     },
     drawGrid () {
       if (this.canDraw) {
-        console.log('olc size changed')
         mapCtl.drawGrid(this.olcSize)
       }
     }
@@ -117,7 +118,6 @@ export default {
       }
     })
     this.map.globalMap.addListener('bounds_changed', () => {
-      console.log('bounds_changed')
       _thisVue.canDraw = (this.map.globalMap.getZoom() >= _thisVue.zoomSize[_thisVue.olcSize])
     })
   }

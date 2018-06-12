@@ -91,25 +91,28 @@ class MapControl {
       self.lon = latLng.lng();
       self.currentCode = currentCode;
     }
-    olcText() {
-      return Object.keys(this.clickedCodes).join('\n')
+    olcText(codes) {
+      if (codes != undefined){
+        return codes.join('\n')
+      } else {
+        return Object.keys(this.clickedCodes).join('\n')
+      }
     }
     clear () {
-      for (var i=0; i<this.shapes.length; i++){
-        this.shapes[i].setMap(null)
-      }
+      this.shapes.forEach( (shape) => {
+        shape.setMap(null)
+      })
       let clickedOlcs = Object.keys(this.clickedCodes)
-      for (var i=0; i<clickedOlcs.length; i++){
-        var key = clickedOlcs[i]
-        this.clickedCodes[key].setMap(null)
-      }
+      clickedOlcs.forEach( (shape) => {
+        this.clickedCodes[shape].setMap(null)
+      })
       this.shapes = []
       this.clickedCodes = {}
     }
     drawGrid (olcSize) {
-      for (var i=0; i<this.shapes.length; i++){
-        this.shapes[i].setMap(null)
-      }
+      this.shapes.forEach( (shape) => {
+        shape.setMap(null)
+      })
       this.shapes = []
       var size = parseInt(olcSize)
       var bounds = this.globalMap.getBounds()
@@ -169,7 +172,16 @@ class MapControl {
       }
     }
     async loadOlc(latLng, rad, size) {
-      const resp = await api.getOlcs(latLng.lat(), latLng.lng(), rad, size)
+      if (latLng == undefined) {
+        var lat = 40.742192046649755
+        var lon = -73.99111747741699
+        var rad = 5
+        var size = 6
+      } else {
+        var lat = latLng.lat()
+        var lon = latLng.lng()
+      }
+      const resp = await api.getOlcs(lat, lon, rad, size)
       for (var i = 0; i<this.shapes.length; i++){
         this.shapes[i].setMap(null);
       }

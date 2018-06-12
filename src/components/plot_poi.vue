@@ -1,25 +1,24 @@
 <template>
   <b-container class="bv-example-row bv-example-row-flex-cols">
     <b-row class="py-2">
-      <p>
-        Open Location Codes have several uses.  One of which is geotargeting digial media campaigns. AppNexus, when used as a DSP allows you to geo target campaigns with OLCs.  The two main benefits to geotargeting with OLCs are targeting custom geo boundaries and ensuring accurate location inventory.
-      </p>
-      <p>
-        Upload a CSV file (two columns - latitude and longitude) to see what an address list with a five mile radius looks like as OLCs.  You can also use the generated OLCs to geotarget campaigns on AppNexus.
-      </p>
+      <b-col cols="12">
+        <p>
+          Open Location Codes have several uses.  One of which is geotargeting digial media campaigns. AppNexus, when used as a DSP allows you to geo target campaigns with OLCs.  The two main benefits to geotargeting with OLCs are targeting custom geo boundaries and ensuring accurate location inventory.
+        </p>
+        <p>
+          Upload a CSV file (two columns - latitude and longitude) to see what an address list with a five mile radius looks like as OLCs.  You can also use the generated OLCs to geotarget campaigns on AppNexus.
+        </p>
+    </b-col>
     </b-row>
-    <b-row class="py-2">
+<!--     <b-row class="py-2">
       <button v-on:click="testPlot">testPlot</button>
-    </b-row>
+    </b-row> -->
     <b-row class="py-2">
       <b-col align-self="center" cols="8">
         <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving">
           <h1>Upload Coords</h1>
           <div class="dropbox">
             <input type="file" multiple :name="uploadFieldName" :disabled="isSaving" @change="filesChange($event.target.name, $event.target.files)" accept="csv" class="input-file">
-              <p v-if="isInitial">
-                Drag your file(s) here to begin<br> or click to browse
-              </p>
               <p v-if="isSaving">
                 Uploading {{ fileCount }} files...
               </p>
@@ -29,7 +28,15 @@
     </b-row>
     <b-row class="py-2">
       <b-col>
-        <div id="map-canvas" style="height: 500px; width: 700px"></div>
+        <div id="map-canvas" class="w-100" style="height: 500px"></div>
+      </b-col>
+      <b-col cols="3">
+        <span>New OLCs:</span>
+        <b-form-textarea
+          v-model="olcText"
+          :disabled="true"
+          :max-rows="15">
+        </b-form-textarea>
       </b-col>
     </b-row>
   </b-container>
@@ -56,6 +63,7 @@ export default {
     return {
       olcSize: false,
       map: null,
+      olcText: '',
       uploadError: null,
       currentStatus: null,
       uploadFieldName: 'olcs'
@@ -84,6 +92,7 @@ export default {
     async upload (formData) {
       const olcs = await api.postOlcs(formData)
       mapCtl.plotList(olcs.olcCodes, olcs.pois)
+      this.olcText = mapCtl.olcText(olcs.olcCodes)
     },
     filesChange (fieldName, fileList) {
       const formData = new FormData()
