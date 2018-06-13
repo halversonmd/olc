@@ -28,7 +28,7 @@
     </b-row>
     <b-row class="py-2">
       <b-col>
-        <div id="map-canvas" class="w-100" style="height: 500px"></div>
+        <div id="map-canvas-plot" class="w-100" style="height: 500px"></div>
       </b-col>
       <b-col cols="3">
         <span>New OLCs:</span>
@@ -48,6 +48,7 @@ let MapControl = require('../../static/js/mapControl').default
 let api = require('../../src/api.js').default
 
 let mapCtl = new MapControl()
+let mapId = 'map-canvas-plot'
 const STATUS_INITIAL = 0
 const STATUS_SAVING = 1
 const STATUS_SUCCESS = 2
@@ -55,8 +56,8 @@ const STATUS_FAILED = 3
 
 export default {
   created: async () => {
-    mapCtl.globalMap = await document.getElementById('map-canvas')
-    mapCtl.newMap()
+    mapCtl.globalMap = await document.getElementById(mapId)
+    mapCtl.newMap(mapId)
   },
   name: 'olcMap',
   data () {

@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+const apiUrl = process.env.API_URL
+
 const client = axios.create({
-  baseURL: 'http://localhost:8080/',
+  baseURL: apiUrl,
   json: true
 })
 

@@ -1,14 +1,5 @@
 <template>
   <div id="myolc">
-    <!-- <b-navbar toggleable="md" type="dark" variant="info">
-      <b-navbar-nav>
-        <b-nav-item href="/overview">What are OLCs</b-nav-item>
-          <b-nav-item href="/draw">Draw</b-nav-item>
-          <b-nav-item href="/convert">Convert</b-nav-item>
-        </b-navbar-nav>
-        <b-collapse is-nav id="nav_collapse">
-      </b-collapse>
-    </b-navbar> -->
     <b-tabs>
       <b-tab title="Overview" active>
         <br>

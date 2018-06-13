@@ -1,54 +1,74 @@
 <template>
   <b-container class="bv-example-row bv-example-row-flex-cols">
-    <b-row align-self="center" class="py-2">
-      <b-col cols="12">
-        <p>
-          Click around the map below to create custom geo boundaries using OLCs with various sizes.  The codes you choose will appear in the adjacent text box.
-        </p>
-      </b-col>
-    </b-row>
-    <b-row class="py-2">
-      <b-col cols="6">
-        <p><b>OLC Size:</b></p>
-        <input type="radio" id="ten" value=10 v-model="olcSize" v-on:change='setCanDraw'>
-        <label for="ten">10</label>
-        <input type="radio" id="eight" value=8 v-model="olcSize" v-on:change='setCanDraw'>
-        <label for="eight">8</label>
-        <input type="radio" id="six" value=6 v-model="olcSize" v-on:change='setCanDraw'>
-        <label for="six">6</label>
-        <input type="radio" id="four" value=4 v-model="olcSize" v-on:change='setCanDraw'>
-        <label for="four">4</label>
-        <input type="radio" id="two" value=2 v-model="olcSize" v-on:change='setCanDraw'>
-        <label for="two">2</label>
-      </b-col>
-      <b-col align-self="center">
-        <div id="redraw" class="my-3">
-          <b-btn v-on:click="drawGrid" :disabled="canDraw===false">Draw Grid</b-btn>
-          <b-popover target="redraw"
-                 triggers="hover"
-                 placement="right"
-                 plaintext
-                 :disabled="canDraw===true">
-               Zoom in or select different size
-        </b-popover>
-        <b-btn v-on:click="clearMap">Clear Map</b-btn>
+    <div class="col">
+      <div class="row">
+        <div class="col d-flex justify-content-between" style="max-width: 700px;">
+          <p>
+            Click around the map below to create custom geo boundaries using OLCs with various sizes.  The codes you choose will appear in the adjacent text box.
+          </p>
         </div>
-      </b-col>
-    </b-row>
-
-    <b-row class="py-2">
-      <b-col>
-        <div id="map-canvas" class="w-100" style="height: 500px"></div>
-      </b-col>
-      <b-col cols="3">
-        <span>Selected OLCs:</span>
-        <b-form-textarea
-          v-model="olcText"
-          :disabled="true"
-          :max-rows="15">
-        </b-form-textarea>
-      </b-col>
-    </b-row>
+      </div>
+      <div class="row">
+        <div class="col justify-content-between" style="max-width: 700px;">
+          <div class="card-group">
+            <div class="card border-light bg-light">
+              <div class="card-header h-25">OLC Size:</div>
+              <div class="card-body">
+                <input type="radio" id="ten" value=10 v-model="olcSize" v-on:change='setCanDraw'>
+                <label for="ten">10</label>
+                <input type="radio" id="eight" value=8 v-model="olcSize" v-on:change='setCanDraw'>
+                <label for="eight">8</label>
+                <input type="radio" id="six" value=6 v-model="olcSize" v-on:change='setCanDraw'>
+                <label for="six">6</label>
+                <input type="radio" id="four" value=4 v-model="olcSize" v-on:change='setCanDraw'>
+                <label for="four">4</label>
+                <input type="radio" id="two" value=2 v-model="olcSize" v-on:change='setCanDraw'>
+                <label for="two">2</label>
+              </div>
+            </div>
+            <div class="card w-25 border-light bg-light">
+              <div class="card-header h-25">Size Reference</div>
+              <div class="card-body">
+                <div class="col-sm col-sm-auto pr-0">
+                  <b-img class="zoom border border-dark" :src="olcImg" width="60" height="40"/>
+                </div>
+              </div>
+            </div>
+            <div class="card border-light bg-light">
+              <div class="card-header h-25">Options</div>
+              <div class="card-body">
+                  <b-btn class="btn btn-secondary btn-sm" id="redraw" v-on:click="drawGrid">Draw Grid</b-btn>
+                  <b-popover target="redraw"
+                         triggers="hover"
+                         placement="right"
+                         container="body"
+                         :disabled="canDraw===true">
+                       Zoom in or select different size
+                  </b-popover>
+                  <b-btn class="btn btn-secondary btn-sm" v-on:click="clearMap">Clear Map</b-btn>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <b-row class="py-2">
+        <b-col>
+          <div id="map-canvas-draw" class="w-100" style="max-width: 700px; height: 500px"></div>
+        </b-col>
+        <b-col cols="3">
+          <div class="d-flex align-items-start flex-column" style="height: 500px;">
+            <div class="mb-auto p-2">
+              <span>Selected OLCs:</span>
+              <b-form-textarea
+                v-model="olcText"
+                :disabled="true"
+                :max-rows="20">
+              </b-form-textarea>
+            </div>
+          </div>
+        </b-col>
+      </b-row>
+    </div>
   </b-container>
 </template>
 
@@ -56,17 +76,19 @@
 
 let MapControl = require('../../static/js/mapControl').default
 
+let mapId = 'map-canvas-draw'
 let mapCtl = new MapControl()
 
 export default {
   created: async () => {
-    mapCtl.globalMap = await document.getElementById('map-canvas')
-    mapCtl.newMap()
+    mapCtl.globalMap = await document.getElementById(mapId)
+    mapCtl.newMap(mapId)
   },
   name: 'olcDraw',
   data () {
     return {
       olcSize: 6,
+      olcImg: '/static/img/olc_size_6.png',
       olcText: '',
       canDraw: true,
       map: null,
@@ -92,6 +114,7 @@ export default {
     },
     setCanDraw () {
       this.canDraw = this.map.globalMap.getZoom() >= this.zoomSize[this.olcSize]
+      this.olcImg = '/static/img/olc_size_' + this.olcSize + '.png'
     },
     clearMap () {
       mapCtl.clear()
@@ -126,18 +149,10 @@ export default {
 </script>
 
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.zoom:hover {
+    transform: scale(8);
+    position: absolute;
+    z-index: 1;
+    transform-origin:top;
 }
 </style>

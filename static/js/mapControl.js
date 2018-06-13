@@ -3,8 +3,7 @@ let gmaps = require('./gmaps.js')
 let api = require('../../src/api.js').default
 
 class MapControl {
-    constructor(globalMap) {
-      this.globalMap = globalMap
+    constructor() {
       this.poly = new google.maps.Rectangle()
       this.marker = new google.maps.Marker()
       this.shapes = []
@@ -18,8 +17,8 @@ class MapControl {
         10: {h: 12, w: 15}
       }
     }
-    newMap(olc_size) {
-      var initMap = new google.maps.Map(document.getElementById('map-canvas'), {
+    newMap(elemId) {
+      var initMap = new google.maps.Map(document.getElementById(elemId), {
           center: new google.maps.LatLng(40.742192046649755, -73.99111747741699),
           zoom: 11,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
