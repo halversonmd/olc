@@ -3,7 +3,7 @@
 > Demo for OLC codes
 > AKA [Plus Codes](https://plus.codes)
 
->source code for [mhalverson.com](mhalverson.com)
+>source code for [mhalverson.com](https://mhalverson.com)
 
 
 ## Build Setup
