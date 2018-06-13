@@ -1,23 +1,32 @@
 <template>
   <div id="myolc">
-    <b-navbar toggleable="md" type="dark" variant="info">
-        <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-        <b-navbar-brand>Halvy</b-navbar-brand>
-        <b-navbar-nav>
-          <b-nav-item href="/overview">What are OLCs</b-nav-item>
-          <b-nav-item href="/demo">Demo</b-nav-item>
-        </b-navbar-nav>
-        <b-collapse is-nav id="nav_collapse">
-      </b-collapse>
-    </b-navbar>
-    <!-- <router-link to="/overview">Overview</router-link> -->
-    <router-view></router-view>
+    <b-tabs>
+      <b-tab title="Overview" active>
+        <br>
+        <olcOverview/>
+      </b-tab>
+      <b-tab title="Convert" >
+        <br>
+        <plotPoi/>
+      </b-tab>
+      <b-tab title="Draw">
+        <br>
+        <draw/>
+      </b-tab>
+    </b-tabs>
   </div>
+
 </template>
 
 <script>
+
+import olcOverview from '@/components/olc_overview'
+import plotPoi from '@/components/plot_poi'
+import draw from '@/components/draw'
+
 export default {
-  name: 'olc'
+  name: 'olc',
+  components: {draw, olcOverview, plotPoi}
 }
 </script>
 
