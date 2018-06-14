@@ -15,7 +15,13 @@ const PORT = process.env.PORT && Number(process.env.PORT)
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
-    rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
+    rules: utils.styleLoaders({ 
+      sourceMap: config.dev.cssSourceMap,
+      usePostCSS: true 
+    }),
+    loaders: [
+      { test: /\.hbs$/, loader: "handlebars-loader" }
+    ]
   },
   // cheap-module-eval-source-map is faster for development
   devtool: config.dev.devtool,
@@ -53,8 +59,9 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new webpack.NoEmitOnErrorsPlugin(),
     // https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'index.html',
+      template: 'index.hbs',
+      title: 'OLCs',
+      MAPS_KEY: 'AIzaSyDgkRwi_rG_GI1ckWpIGFSAsLzNDic2neQ',
       inject: true
     }),
     // copy custom static assets

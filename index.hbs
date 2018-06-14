@@ -3,10 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>OLC</title>
-    <p><&=HtmlWebpackPlugin.tempdddlate%></p>
+    <title><%= htmlWebpackPlugin.options.title %></title>
     <script type="text/javascript"
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAp2arCFYgztAwVi6QnTkCwWcT2-HxZOVY&libraries=geometry">
+    src="https://maps.googleapis.com/maps/api/js?key=<%= htmlWebpackPlugin.options.MAPS_KEY %>&libraries=geometry">
     </script>
   </head>
   <body>

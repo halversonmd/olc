@@ -19,7 +19,10 @@ const webpackConfig = merge(baseWebpackConfig, {
       sourceMap: config.build.productionSourceMap,
       extract: true,
       usePostCSS: true
-    })
+    }),
+    loaders: [
+      { test: /\.hbs$/, loader: "handlebars-loader" }
+    ]
   },
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   output: {
@@ -62,7 +65,9 @@ const webpackConfig = merge(baseWebpackConfig, {
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: config.build.index,
-      template: 'index.html',
+      template: 'index.hbs',
+      title: 'OLCs',
+      MAPS_KEY: 'AIzaSyAp2arCFYgztAwVi6QnTkCwWcT2-HxZOVY',
       inject: true,
       minify: {
         removeComments: true,
