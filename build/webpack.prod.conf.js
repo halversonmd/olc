@@ -66,7 +66,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: config.build.index,
       template: 'index.hbs',
-      title: 'OLCs',
+      title: 'Open Location Codes',
       MAPS_KEY: 'AIzaSyAp2arCFYgztAwVi6QnTkCwWcT2-HxZOVY',
       inject: true,
       minify: {
