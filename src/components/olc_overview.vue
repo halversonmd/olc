@@ -12,7 +12,7 @@
     </b-row>
     <b-row class="py-2">
       <b-col align-self="center" cols="8">
-        <b-btn class="btn-primary sm" v-on:click="loadMap" :disabled="olcsLoaded">Show OLCs</b-btn>
+        <b-btn id="overviewLoad" class="btn-primary sm" v-on:click="loadMap" :disabled="olcsLoaded">Show OLCs</b-btn>
       </b-col>
     </b-row>
     <b-row class="py-2" cols="12">
@@ -34,6 +34,7 @@ export default {
   created: async () => {
     mapCtl.globalMap = await document.getElementById(mapId)
     mapCtl.newMap(mapId)
+    window.ga('send', 'event', 'created', 'overview')
   },
   name: 'overview',
   data () {
@@ -43,8 +44,17 @@ export default {
   },
   methods: {
     async loadMap () {
+      window.ga('send', 'event', 'buttonClick', 'overviewLoad')
       await mapCtl.loadOlc()
       this.olcsLoaded = true
+    },
+    outboundClick (event) {
+      window.ga('send', 'event', {
+        eventCategory: 'Outbound Link',
+        eventAction: 'click',
+        eventLabel: event.target.href,
+        transport: 'beacon'
+      })
     }
   }
 }

@@ -69,8 +69,12 @@ export default {
       this.formData.ipInfo = await api.clientInfoApi.getInfo()
       api.exec.formSubmit(this.formData)
       document.getElementById('contactSubmit').disabled = true
-      alert('Your comment has been submitted')
+      window.ga('send', 'event', 'contactSubmit')
+      alert('Submitted successfully')
     }
+  },
+  mounted: () => {
+    window.ga('send', 'event', 'mounted', 'contact')
   }
 }
 

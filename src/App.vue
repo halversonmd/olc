@@ -3,12 +3,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-between">
       <router-link to="/">Home</router-link>
       <b-dropdown id="ddown-right" text="More" class="my-2 my-sm-0">
-        <b-dropdown-item>
-          <router-link to="/about">About</router-link>
-        </b-dropdown-item>
-        <b-dropdown-item>
-          <router-link to="/contact">Contact</router-link>
-        </b-dropdown-item>
+        <b-dropdown-item to="/about">About</b-dropdown-item>
+        <b-dropdown-item to="/contact">Contact</b-dropdown-item>
       </b-dropdown>
     </nav>
     <br>

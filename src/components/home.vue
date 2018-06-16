@@ -1,5 +1,5 @@
 <template>
-  <b-tabs>
+  <b-tabs @input="tabView($event)">
       <b-tab title="Overview" active>
         <br>
         <olcOverview/>
@@ -8,7 +8,7 @@
         <br>
         <plotPoi/>
       </b-tab>
-      <b-tab title="Draw">
+      <b-tab title="Draw" >
         <br>
         <draw/>
       </b-tab>
@@ -23,6 +23,21 @@ import draw from '@/components/draw'
 
 export default {
   name: 'olcHome',
-  components: {draw, olcOverview, plotPoi}
+  components: {draw, olcOverview, plotPoi},
+  data () {
+    return {
+      tabIdx: {
+        0: 'Overview',
+        1: 'Convert',
+        2: 'Draw'
+      }
+    }
+  },
+  methods: {
+    tabView (event) {
+      var tab = this.tabIdx[event]
+      window.ga('send', 'event', 'tabView', tab)
+    }
+  }
 }
 </script>
