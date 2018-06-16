@@ -93,8 +93,10 @@ export default {
       mapCtl.plotList(olcs.olcCodes, olcs.pois)
       this.olcText = mapCtl.olcText(olcs.olcCodes)
       this.loading = false
+      window.ga('send', 'event', 'upload', 'success')
     },
     filesChange (fieldName, fileList) {
+      window.ga('send', 'event', 'upload', 'change')
       this.loading = true
       const formData = new FormData()
       if (!fileList.length) return
@@ -107,6 +109,7 @@ export default {
     }
   },
   mounted: async function () {
+    window.ga('send', 'event', 'mounted', 'plotPoi')
     this.reset()
   }
 }

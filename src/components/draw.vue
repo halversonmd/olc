@@ -92,6 +92,7 @@ export default {
       olcSize: 6,
       olcImg: '/static/img/olc_size_6.png',
       olcText: '',
+      hasGrid: false,
       canDraw: true,
       map: null,
       selectOlcAlert: false,
@@ -117,9 +118,12 @@ export default {
     setCanDraw () {
       this.canDraw = this.map.globalMap.getZoom() >= this.zoomSize[this.olcSize]
       this.olcImg = '/static/img/olc_size_' + this.olcSize + '.png'
+      window.ga('send', 'event', 'drawCtl', 'sizeChange', this.olcSize)
     },
     clearMap () {
       mapCtl.clear()
+      window.ga('send', 'event', 'drawCtl', 'mapClear')
+      this.hasGrid = false
       this.olcText = ''
     },
     loadOlcText () {
@@ -128,14 +132,18 @@ export default {
     drawGrid () {
       if (this.canDraw) {
         mapCtl.drawGrid(this.olcSize)
+        window.ga('send', 'event', 'drawCtl', 'drawGrid', this.olcSize)
+        this.hasGrid = true
       }
     }
   },
   mounted: async function () {
+    window.ga('send', 'event', 'mounted', 'draw')
     this.map = await mapCtl
     let _thisVue = this
     this.map.globalMap.addListener('click', (e) => {
       if (_thisVue.olcSize) {
+        window.ga('send', 'event', 'mapClick', 'draw', 'hasGrid:' + JSON.stringify(_thisVue.hasGrid), _thisVue.olcSize)
         mapCtl.placeMarkerAndPanTo(e.latLng, _thisVue.olcSize)
         _thisVue.loadOlcText()
       } else {

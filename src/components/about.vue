@@ -3,7 +3,7 @@
     <div class="row justify-content-center">
       <div class="col col-10">
         <p>
-          Openlocation.codes is a resource for people to learn more about Open Location Codes, how to use them, and generate them.  For more information, please refer to the <a href="https://plus.codes/">official site </a>.
+          Openlocation.codes is a resource for people to learn more about Open Location Codes, how to use them, and generate them.  For more information, please refer to the <a href="https://plus.codes/" @click="outboundClick($event)">official site </a>.
         </p>
         <p>
           If you want to suggest additional functionality for this site or contact the owner, please do so <router-link to="/contact">here</router-link>.
@@ -16,7 +16,20 @@
 <script>
 
 export default {
-  name: 'about'
+  name: 'about',
+  methods: {
+    outboundClick (event) {
+      window.ga('send', 'event', {
+        eventCategory: 'Outbound Link',
+        eventAction: 'click',
+        eventLabel: event.target.href,
+        transport: 'beacon'
+      })
+    }
+  },
+  mounted: () => {
+    window.ga('send', 'event', 'mounted', 'about')
+  }
 }
 
 </script>
