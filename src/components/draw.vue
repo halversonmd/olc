@@ -37,6 +37,7 @@
             <div class="card border-light bg-light">
               <div class="card-header h-25">Options</div>
               <div class="card-body">
+                <div class="btn-group-vertical" role="group" aria-label="Basic example">
                   <b-btn class="btn btn-secondary btn-sm" id="redraw" v-on:click="drawGrid">Draw Grid</b-btn>
                   <b-popover target="redraw"
                          triggers="hover"
@@ -46,6 +47,7 @@
                        Zoom in or select different size
                   </b-popover>
                   <b-btn class="btn btn-secondary btn-sm" v-on:click="clearMap">Clear Map</b-btn>
+                </div>
               </div>
             </div>
           </div>

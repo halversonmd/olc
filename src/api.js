@@ -1,13 +1,22 @@
 import axios from 'axios'
 
 const apiUrl = process.env.API_URL
+var env = process.env.NODE_ENV
 
 const client = axios.create({
   baseURL: apiUrl,
   json: true
 })
 
-export default {
+var clientInfoApi = {
+  getInfo () {
+    return axios.get('https://json.geoiplookup.io/api').then((req) => {
+      return req.data
+    })
+  }
+}
+
+var exec = {
   execute (method, resource, data) {
     return client({
       method,
@@ -26,5 +35,12 @@ export default {
   },
   testGetOlcs () {
     return this.execute('get', '/api/testOlcs')
+  },
+  formSubmit (formData) {
+    return this.execute('post', '/api/submit', formData)
   }
+}
+
+export default {
+  exec, env, clientInfoApi
 }
