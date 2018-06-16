@@ -15,8 +15,8 @@
         <b-btn class="btn-primary sm" v-on:click="loadMap" :disabled="olcsLoaded">Show OLCs</b-btn>
       </b-col>
     </b-row>
-    <b-row class="py-2">
-      <b-col>
+    <b-row class="py-2" cols="12">
+      <b-col cols="10">
         <div id="map-canvas-overview" class="w-100" style="height: 500px"></div>
       </b-col>
     </b-row>

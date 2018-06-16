@@ -1,36 +1,35 @@
 <template>
   <div id="myolc">
-    <b-tabs>
-      <b-tab title="Overview" active>
-        <br>
-        <olcOverview/>
-      </b-tab>
-      <b-tab title="Convert" >
-        <br>
-        <plotPoi/>
-      </b-tab>
-      <b-tab title="Draw">
-        <br>
-        <draw/>
-      </b-tab>
-    </b-tabs>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-between">
+      <router-link to="/">Home</router-link>
+      <b-dropdown id="ddown-right" text="More" class="my-2 my-sm-0">
+        <b-dropdown-item>
+          <router-link to="/about">About</router-link>
+        </b-dropdown-item>
+        <b-dropdown-item>
+          <router-link to="/contact">Contact</router-link>
+        </b-dropdown-item>
+      </b-dropdown>
+    </nav>
+    <br>
+    <router-view></router-view>
+    <br>
   </div>
-
 </template>
 
 <script>
 
-import olcOverview from '@/components/olc_overview'
-import plotPoi from '@/components/plot_poi'
-import draw from '@/components/draw'
-
 export default {
-  name: 'olc',
-  components: {draw, olcOverview, plotPoi}
+  name: 'olc'
 }
 </script>
 
 <style>
+.navbar-nav > li > a, .navbar-brand {
+    padding-top:5px !important; padding-bottom:0 !important;
+    height: 30px;
+}
+.navbar {min-height:20px !important;}
 #olc {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

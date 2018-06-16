@@ -10,9 +10,6 @@
         </p>
     </b-col>
     </b-row>
-<!--     <b-row class="py-2">
-      <button v-on:click="testPlot">testPlot</button>
-    </b-row> -->
     <b-row class="py-2">
       <b-col align-self="center" cols="8">
         <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving">
@@ -45,7 +42,7 @@
 <script>
 
 let MapControl = require('../../static/js/mapControl').default
-let api = require('../../src/api.js').default
+let api = require('../../src/api.js').default.exec
 
 let mapCtl = new MapControl()
 let mapId = 'map-canvas-plot'
@@ -67,7 +64,8 @@ export default {
       olcText: '',
       uploadError: null,
       currentStatus: null,
-      uploadFieldName: 'olcs'
+      uploadFieldName: 'olcs',
+      loading: false
     }
   },
   computed: {
@@ -94,8 +92,10 @@ export default {
       const olcs = await api.postOlcs(formData)
       mapCtl.plotList(olcs.olcCodes, olcs.pois)
       this.olcText = mapCtl.olcText(olcs.olcCodes)
+      this.loading = false
     },
     filesChange (fieldName, fileList) {
+      this.loading = true
       const formData = new FormData()
       if (!fileList.length) return
       Array
