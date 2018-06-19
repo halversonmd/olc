@@ -10,9 +10,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const PrerenderSPAPlugin = require('prerender-spa-plugin')
-// Renders headlessly in a downloaded version of Chromium through puppeteer
-const PuppeteerRenderer = PrerenderSPAPlugin.PuppeteerRenderer
+
 
 const env = require('../config/prod.env')
 
@@ -34,11 +32,6 @@ const webpackConfig = merge(baseWebpackConfig, {
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
   },
   plugins: [
-    new PrerenderSPAPlugin({
-      staticDir: path.join(__dirname, '../dist'), // The path to the folder where index.html is.
-      routes: ['/', '/about'], // List of routes to prerender.
-      renderer: new PuppeteerRenderer()
-    }),
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({
       'process.env': env
