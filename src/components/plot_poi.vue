@@ -25,6 +25,7 @@
     </b-row>
     <b-row class="py-2">
       <b-col>
+        <div id='spinner' class='loader' v-show='loading'></div>
         <div id="map-canvas-plot" class="w-100" style="height: 500px"></div>
       </b-col>
       <b-col cols="3">
@@ -93,11 +94,22 @@ export default {
       mapCtl.plotList(olcs.olcCodes, olcs.pois)
       this.olcText = mapCtl.olcText(olcs.olcCodes)
       this.loading = false
+      this.loading = false
+      mapCtl.enable()
       window.ga('send', 'event', 'upload', 'success')
     },
+    initLoad () {
+      mapCtl.disable()
+      var mp = document.getElementById('map-canvas-plot')
+      var width = mp.offsetWidth
+      width = (Math.round((width / 2) * 10) / 10) - 50
+      var loadingDiv = document.getElementById('spinner')
+      loadingDiv.style.marginLeft = JSON.stringify(width) + 'px'
+    },
     filesChange (fieldName, fileList) {
-      window.ga('send', 'event', 'upload', 'change')
       this.loading = true
+      this.initLoad()
+      window.ga('send', 'event', 'upload', 'change')
       const formData = new FormData()
       if (!fileList.length) return
       Array
@@ -117,18 +129,25 @@ export default {
 </script>
 
 <style scoped>
-h1, h2 {
-  font-weight: normal;
+.loader {
+  position: absolute;
+  z-index: 1;
+  margin-top: 190px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>
