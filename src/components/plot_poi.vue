@@ -11,16 +11,42 @@
     </b-col>
     </b-row>
     <b-row class="py-2">
-      <b-col align-self="center" cols="8">
-        <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving">
-          <h1>Upload Coords</h1>
-          <div class="dropbox">
-            <input type="file" multiple :name="uploadFieldName" :disabled="isSaving" @change="filesChange($event.target.name, $event.target.files)" accept="csv" class="input-file">
-              <p v-if="isSaving">
-                Uploading {{ fileCount }} files...
-              </p>
+      <b-col cols="3">
+        <div class="card border-light bg-light">
+          <div class="card-header h-15">Upload Coords:</div>
+          <div class="card-body">
+            <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving">
+              <div class="dropbox">
+                <input type="file" multiple :name="uploadFieldName" :disabled="isSaving" @change="filesChange($event)" accept="csv" class="input-file">
+                  <p v-if="isSaving">
+                    Uploading {{ fileCount }} files...
+                  </p>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
+      </b-col>
+      <b-col cols="3">
+        <div class="card border-light bg-light">
+          <div class="card-header h-15">Select radius:</div>
+          <div class="card-body">
+            <input type="radio" id="five" value=5 v-model="radius">
+            <label for="five">5</label>
+            <input type="radio" id="ten" value=10 v-model="radius">
+            <label for="ten">10</label>
+          </div>
+        </div>
+      </b-col>
+      <b-col cols="3">
+        <div class="card border-light bg-light">
+          <div class="card-header h-15">Plot on map:</div>
+          <div>
+            <b-form-checkbox id="checkbox1" v-model="plotMap">
+              Plot on map
+            </b-form-checkbox>
+            <div>(Uncheck for faster processing)</div>
+          </div>
+        </div>
       </b-col>
     </b-row>
     <b-row class="py-2">
@@ -42,7 +68,7 @@
 <script>
 
 let MapControl = require('../../static/js/mapControl').default
-let api = require('../../src/api.js').default.exec
+let Papa = require('../../static/js/papaparse.min.js')
 
 let mapCtl = new MapControl()
 let mapId = 'map-canvas-plot'
@@ -60,6 +86,8 @@ export default {
   data () {
     return {
       olcSize: false,
+      plotMap: true,
+      radius: 5,
       map: null,
       olcText: '',
       uploadError: null,
@@ -88,24 +116,29 @@ export default {
       this.uploadedFiles = []
       this.uploadError = null
     },
-    async upload (formData) {
-      const olcs = await api.postOlcs(formData)
-      mapCtl.plotList(olcs.olcCodes, olcs.pois)
-      this.olcText = mapCtl.olcText(olcs.olcCodes)
+    async upload (file) {
+      const reader = new FileReader()
+      var fileData = await new Promise((resolve, reject) => {
+        reader.onload = event => resolve(event.target.result)
+        reader.onerror = error => reject(error)
+        reader.readAsText(file)
+      })
+      var coords = Papa.parse(fileData).data.slice(1)
+      var olcData = await mapCtl.coordsToOlc(coords, this.radius, 6)
+      if (this.plotMap) {
+        mapCtl.plotList(olcData.olcCodes, olcData.pois)
+      }
+      this.olcText = mapCtl.olcText(olcData.olcCodes)
       this.loading = false
       window.ga('send', 'event', 'upload', 'success')
     },
-    filesChange (fieldName, fileList) {
+    filesChange (event) {
       window.ga('send', 'event', 'upload', 'change')
       this.loading = true
-      const formData = new FormData()
-      if (!fileList.length) return
-      Array
-        .from(Array(fileList.length).keys())
-        .map(x => {
-          formData.append('olcFile', fileList[x])
-        })
-      this.upload(formData)
+      const input = event.target
+      if ('files' in input && input.files.length > 0) {
+        this.upload(input.files[0])
+      }
     }
   },
   mounted: async function () {

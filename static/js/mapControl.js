@@ -236,6 +236,67 @@ class MapControl {
         olcCode: self.currentCode
       }
     }
+    coordsToOlc (coords, rad, codeLen) {
+      return new Promise((resolve, reject) => {
+        var radius = parseInt(rad)
+        var codeLength = parseInt(codeLen)
+        if (radius === 5) {
+            var widthCount = 1
+            var widthIter = 5
+            var heightCount = 1.25
+            var heightIter = 3
+        } else if (radius === 10) {
+            var widthCount = 2.75
+            var widthIter = 6
+            var heightCount = 2.5
+            var heightIter = 6
+        }
+        let r = 6371377.06 //radius of earth
+        let h = 5566
+        let w = 4210
+
+        let deg2rad = (deg) => {
+            return deg * (Math.PI/180)
+        }
+
+        let getStart = (west, north, lat, lon) => {
+            let startLat = (north*2*180)/((r*2)*Math.PI)+lat
+            let startLon = (((west/r)/(Math.cos(deg2rad(lat))*Math.cos(deg2rad(lat))))+deg2rad(lon))*(180/Math.PI)
+            startLon = lon - (startLon - lon)
+            return [startLat, startLon]
+        }
+
+        var olcArr = []
+        for (var i=0; i<coords.length; i++){
+            var latlngs = getStart((w*widthCount), (h*heightCount), parseFloat(coords[i][0]), parseFloat(coords[i][1]))
+            if (isNaN(latlngs[0]) || isNaN(latlngs[1])) {
+              { continue; }
+            }
+            olcArr.push(OpenLocationCode.encode(latlngs[0], latlngs[1], codeLength))
+            for (var j=0; j<widthIter; j++){
+                for (var k=0; k<heightIter; k++){
+                    var lastCode = OpenLocationCode.decode(olcArr.slice(-1)[0])
+                    var midLat = lastCode.latitudeHi - ((lastCode.latitudeHi-lastCode.latitudeLo)/2)
+                    var midLon = lastCode.longitudeHi + ((lastCode.longitudeHi-lastCode.longitudeLo)/2)
+                    olcArr.push(OpenLocationCode.encode(midLat, midLon, codeLength))
+                }
+                if (j == widthIter-2) {
+                    { break; }
+                } else {
+                    var lastCode = OpenLocationCode.decode(olcArr.slice(-(heightIter+1))[0])
+                    var midLat = lastCode.latitudeLo - ((lastCode.latitudeHi-lastCode.latitudeLo)/2)
+                    var midLon = lastCode.longitudeHi - ((lastCode.longitudeHi-lastCode.longitudeLo)/2)
+                    olcArr.push(OpenLocationCode.encode(midLat, midLon, codeLength))
+                }
+            }
+        }
+        // de-dupe
+        var respOlc = olcArr.filter(function (el, i, arr) {
+            return arr.indexOf(el) === i;
+        })
+        resolve({olcCodes:respOlc, pois: coords})
+      })
+    }
   }
 
 
